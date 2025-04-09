@@ -1,0 +1,23 @@
+-- Patient registration
+INSERT INTO Patients (first_name, last_name, dob, gender, phone, email)
+VALUES ('Jane', 'Smith', '1985-07-15', 'Female', '9876543210', 'jane@example.com');
+
+-- Doctor registration
+INSERT INTO Staff (first_name, last_name, role, specialization, email, hire_date)
+VALUES ('Robert', 'Johnson', 'Doctor', 'Cardiology', 'dr.johnson@hospital.com', '2020-01-10');
+
+-- Schedule appointment
+INSERT INTO Appointments (patient_id, doctor_id, appointment_date, reason)
+VALUES (1, 1, '2023-12-15 14:30:00', 'Routine heart checkup');
+
+-- Add medical record
+INSERT INTO MedicalRecords (patient_id, doctor_id, diagnosis, treatment)
+VALUES (1, 1, 'Hypertension', 'Prescribed medication and lifestyle changes');
+
+-- Generate bill
+INSERT INTO Billing (patient_id, appointment_id, total_amount, due_date)
+VALUES (1, 1, 250.00, DATE_ADD(CURDATE(), INTERVAL 30 DAY));
+
+-- Inventory management
+INSERT INTO Inventory (name, category, quantity, unit_price, supplier)
+VALUES ('Paracetamol 500mg', 'Pharmacy', 1000, 0.50, 'MediSupplies Inc.');

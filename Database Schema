@@ -1,0 +1,76 @@
+CREATE DATABASE HospitalManagement;
+USE HospitalManagement;
+
+-- Tables
+CREATE TABLE Patients (
+    patient_id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    dob DATE NOT NULL,
+    gender ENUM('Male', 'Female', 'Other'),
+    blood_type ENUM('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'),
+    phone VARCHAR(15),
+    email VARCHAR(100),
+    address TEXT,
+    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Staff (
+    staff_id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    role ENUM('Doctor', 'Nurse', 'Administrator', 'Technician') NOT NULL,
+    specialization VARCHAR(100),
+    phone VARCHAR(15),
+    email VARCHAR(100) UNIQUE NOT NULL,
+    hire_date DATE NOT NULL,
+    status ENUM('Active', 'Inactive') DEFAULT 'Active'
+);
+
+CREATE TABLE Appointments (
+    appointment_id INT PRIMARY KEY AUTO_INCREMENT,
+    patient_id INT NOT NULL,
+    doctor_id INT NOT NULL,
+    appointment_date DATETIME NOT NULL,
+    status ENUM('Scheduled', 'Completed', 'Cancelled', 'No Show') DEFAULT 'Scheduled',
+    reason TEXT,
+    diagnosis TEXT,
+    prescription TEXT,
+    FOREIGN KEY (patient_id) REFERENCES Patients(patient_id),
+    FOREIGN KEY (doctor_id) REFERENCES Staff(staff_id)
+);
+
+CREATE TABLE MedicalRecords (
+    record_id INT PRIMARY KEY AUTO_INCREMENT,
+    patient_id INT NOT NULL,
+    doctor_id INT NOT NULL,
+    record_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    diagnosis TEXT NOT NULL,
+    treatment TEXT,
+    notes TEXT,
+    FOREIGN KEY (patient_id) REFERENCES Patients(patient_id),
+    FOREIGN KEY (doctor_id) REFERENCES Staff(staff_id)
+);
+
+CREATE TABLE Billing (
+    bill_id INT PRIMARY KEY AUTO_INCREMENT,
+    patient_id INT NOT NULL,
+    appointment_id INT,
+    total_amount DECIMAL(12,2) NOT NULL,
+    paid_amount DECIMAL(12,2) DEFAULT 0,
+    billing_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    due_date DATE,
+    status ENUM('Pending', 'Partial', 'Paid') DEFAULT 'Pending',
+    FOREIGN KEY (patient_id) REFERENCES Patients(patient_id),
+    FOREIGN KEY (appointment_id) REFERENCES Appointments(appointment_id)
+);
+
+CREATE TABLE Inventory (
+    item_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    category VARCHAR(50),
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL,
+    supplier VARCHAR(100),
+    last_restock_date DATE
+);

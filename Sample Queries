@@ -1,23 +1,24 @@
--- Patient registration
-INSERT INTO Patients (first_name, last_name, dob, gender, phone, email)
-VALUES ('Jane', 'Smith', '1985-07-15', 'Female', '9876543210', 'jane@example.com');
+-- Add a new member
+INSERT INTO Members (name, email, phone, address, membership_date)
+VALUES ('John Doe', 'john@example.com', '1234567890', '123 Main St', CURDATE());
 
--- Doctor registration
-INSERT INTO Staff (first_name, last_name, role, specialization, email, hire_date)
-VALUES ('Robert', 'Johnson', 'Doctor', 'Cardiology', 'dr.johnson@hospital.com', '2020-01-10');
+-- Add a new book
+INSERT INTO Books (title, author, isbn, publisher, publication_year, category, total_copies, available_copies)
+VALUES ('Database Systems', 'Alice Smith', '978-0123456789', 'Tech Pub', 2022, 'Computer Science', 5, 5);
 
--- Schedule appointment
-INSERT INTO Appointments (patient_id, doctor_id, appointment_date, reason)
-VALUES (1, 1, '2023-12-15 14:30:00', 'Routine heart checkup');
+-- Check out a book
+START TRANSACTION;
+INSERT INTO Loans (book_id, member_id, loan_date, due_date)
+VALUES (1, 1, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 14 DAY));
+UPDATE Books SET available_copies = available_copies - 1 WHERE book_id = 1;
+COMMIT;
 
--- Add medical record
-INSERT INTO MedicalRecords (patient_id, doctor_id, diagnosis, treatment)
-VALUES (1, 1, 'Hypertension', 'Prescribed medication and lifestyle changes');
+-- Return a book
+START TRANSACTION;
+UPDATE Loans SET return_date = CURDATE(), status = 'Returned' WHERE loan_id = 1;
+UPDATE Books SET available_copies = available_copies + 1 WHERE book_id = 1;
+-- Check for overdue and apply fine if needed
+COMMIT;
 
--- Generate bill
-INSERT INTO Billing (patient_id, appointment_id, total_amount, due_date)
-VALUES (1, 1, 250.00, DATE_ADD(CURDATE(), INTERVAL 30 DAY));
-
--- Inventory management
-INSERT INTO Inventory (name, category, quantity, unit_price, supplier)
-VALUES ('Paracetamol 500mg', 'Pharmacy', 1000, 0.50, 'MediSupplies Inc.');
+-- Search for available books
+SELECT * FROM Books WHERE available_copies > 0 AND title LIKE '%database%';
